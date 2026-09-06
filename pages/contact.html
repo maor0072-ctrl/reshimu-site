@@ -1,0 +1,129 @@
+<header class="hero hero-sm">
+  <div class="wrap">
+    <h1>יצירת קשר</h1>
+    <div class="rule"></div>
+    <p class="lede">מלא/י את הפרטים, ובעז&quot;ה ייצרו איתך קשר להמשך</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <p>כדי שהפנייה תקבל מענה ענייני, כדאי לפרט בקצרה במה מדובר ומה היית רוצה שיקרה בסוף התהליך. <strong>אם הופנית לכאן על ידי מישהו, אנא ציין/י את שמו</strong> &mdash; זה מה שמקדם את הפנייה.</p>
+
+    <form id="lead-form" class="card" novalidate>
+      <div class="field">
+        <label for="name">שם ומשפחה <span class="req">*</span></label>
+        <input id="name" name="name" type="text" required autocomplete="name">
+      </div>
+
+      <div class="field">
+        <label for="phone">טלפון נייד <span class="req">*</span></label>
+        <input id="phone" name="phone" type="tel" required autocomplete="tel" inputmode="tel" placeholder="050-1234567">
+      </div>
+
+      <div class="field">
+        <label for="email">דוא&quot;ל <span class="req">*</span></label>
+        <input id="email" name="email" type="email" required autocomplete="email" dir="ltr">
+      </div>
+
+      <div class="field">
+        <label for="subject">נושא הפנייה <span class="req">*</span>
+          <span class="hint">באיזה נושא את/ה צריך/ה ייעוץ? נא לפרט.</span>
+        </label>
+        <textarea id="subject" name="subject" required></textarea>
+      </div>
+
+      <p class="optional-head">לא חובה, אבל עוזר</p>
+
+      <div class="field">
+        <label for="business">שם העסק</label>
+        <input id="business" name="business" type="text" autocomplete="organization">
+      </div>
+
+      <div class="field">
+        <label for="field">תחום עיסוק</label>
+        <input id="field" name="field" type="text">
+      </div>
+
+      <div class="field">
+        <label for="referrer">מי הפנה אותך</label>
+        <input id="referrer" name="referrer" type="text">
+      </div>
+
+      <!-- מלכודת ספאם. אסור להזיז אותה בקיזוז שלילי (left/right: -9999px) -
+           במסמך RTL זה מותח את רוחב המסמך ודוחף את כל התוכן מחוץ למסך. -->
+      <input type="text" name="website" id="website" tabindex="-1" autocomplete="off"
+             aria-hidden="true"
+             style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;padding:0">
+
+      <button type="submit" class="btn" id="lead-submit">שליחת הבקשה</button>
+      <div class="form-status" id="lead-status" role="status"></div>
+    </form>
+
+    <p style="margin-top:26px">אפשר גם לכתוב ישירות:</p>
+    <a class="contact-mail" href="mailto:jmaor@reshimu.co.il">jmaor@reshimu.co.il</a>
+  </div>
+</section>
+
+<script>
+(function () {
+  var form = document.getElementById('lead-form');
+
+  // כפתור "להזמנת עותק" בעמוד ספר מגיע לכאן עם ?book=<שם הספר>.
+  // ממלאים מראש את נושא הפנייה כדי שהמזמין לא יצטרך לנסח כלום.
+  var book = new URLSearchParams(location.search).get('book');
+  if (book) {
+    var subj = document.getElementById('subject');
+    if (!subj.value) subj.value = 'הזמנת עותק אלקטרוני של הספר "' + book + '"';
+    var head = document.querySelector('.hero-sm .lede');
+    if (head) head.textContent = 'הזמנת הספר "' + book + '"';
+  }
+  var status = document.getElementById('lead-status');
+  var btn = document.getElementById('lead-submit');
+
+  function show(kind, msg) {
+    status.className = 'form-status ' + kind;
+    status.textContent = msg;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var required = ['name', 'phone', 'email', 'subject'];
+    for (var i = 0; i < required.length; i++) {
+      var el = form.elements[required[i]];
+      if (!el.value.trim()) {
+        show('err', 'חסר שדה חובה. נא להשלים את כל השדות המסומנים בכוכבית.');
+        el.focus();
+        return;
+      }
+    }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.elements.email.value.trim())) {
+      show('err', 'כתובת הדוא"ל אינה תקינה.');
+      form.elements.email.focus();
+      return;
+    }
+
+    var data = {};
+    ['name', 'phone', 'email', 'subject', 'business', 'field', 'referrer', 'website']
+      .forEach(function (k) { data[k] = (form.elements[k].value || '').trim(); });
+    data.page = location.pathname;
+
+    btn.disabled = true;
+    show('ok', 'שולח...');
+
+    fetch(window.LEAD_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      form.reset();
+      show('ok', 'הבקשה נשלחה. בעז"ה ייצרו איתך קשר בהקדם.');
+    }).catch(function () {
+      show('err', 'השליחה נכשלה. אפשר לכתוב ישירות ל-jmaor@reshimu.co.il ונחזור אליך.');
+    }).then(function () {
+      btn.disabled = false;
+    });
+  });
+})();
+</script>

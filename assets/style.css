@@ -1,0 +1,95 @@
+/* רשימו - הרב יעקב מאור | גיליון עיצוב */
+:root{--ink:#1c1a17;--ink-soft:#4a453e;--gold:#b08434;--gold-deep:#8a6524;
+  --cream:#faf7f1;--cream-warm:#f3ece0;--line:#e3d9c8;--white:#fff;--wrap:820px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Heebo","Segoe UI",Arial,sans-serif;background:var(--cream);color:var(--ink);
+  line-height:1.85;font-size:18px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 22px}
+a{color:var(--gold-deep)}
+
+.topbar{background:var(--white);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding-top:12px;padding-bottom:12px;flex-wrap:wrap}
+.topbar .mark{font-weight:700;font-size:1.05rem;color:var(--ink);text-decoration:none}
+.topbar nav{display:flex;gap:20px;flex-wrap:wrap}
+.topbar nav a{color:var(--ink-soft);font-size:.98rem;font-weight:500;text-decoration:none}
+.topbar nav a:hover,.topbar nav a.active{color:var(--gold-deep)}
+
+.hero{background:linear-gradient(180deg,var(--white) 0%,var(--cream-warm) 100%);
+  border-bottom:1px solid var(--line);padding:74px 0 58px;text-align:center}
+.hero h1{font-size:2.55rem;font-weight:700;letter-spacing:-.5px;line-height:1.25}
+.hero .rule{width:62px;height:3px;background:var(--gold);margin:22px auto;border-radius:2px}
+.hero p.lede{font-size:1.22rem;color:var(--ink-soft);font-weight:300;max-width:560px;margin:0 auto}
+.hero-sm{padding:52px 0 40px}
+.hero-sm h1{font-size:2rem}
+
+section{padding:52px 0;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+h2{font-size:1.5rem;font-weight:700;margin-bottom:18px;color:var(--ink)}
+h2::before{content:"";display:inline-block;width:9px;height:9px;background:var(--gold);
+  border-radius:50%;margin-left:11px;vertical-align:middle}
+h3{font-size:1.15rem;font-weight:700;margin:26px 0 10px}
+p{margin-bottom:16px;color:var(--ink-soft)}
+p strong{color:var(--ink);font-weight:500}
+ul{margin:0 22px 16px 0;color:var(--ink-soft)}
+li{margin-bottom:7px}
+.card{background:var(--white);border:1px solid var(--line);border-radius:12px;
+  padding:28px 30px;margin-top:24px;box-shadow:0 2px 16px rgba(28,26,23,.06)}
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:16px;margin-top:26px}
+.pillar{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:22px 20px}
+.pillar span{display:block;font-size:.82rem;letter-spacing:.09em;color:var(--gold-deep);
+  font-weight:500;margin-bottom:7px}
+.pillar b{display:block;font-size:1.05rem;margin-bottom:7px}
+.pillar em{font-style:normal;color:var(--ink-soft);font-size:.96rem;line-height:1.7}
+.note{background:var(--cream-warm);border-inline-start:4px solid var(--gold);
+  border-radius:8px;padding:20px 24px;margin-top:24px}
+.note p:last-child{margin-bottom:0}
+
+.btn{display:inline-block;background:var(--gold);color:var(--white);border:none;
+  padding:14px 32px;border-radius:10px;font-weight:600;font-size:1.02rem;
+  font-family:inherit;cursor:pointer;text-decoration:none;transition:background .15s}
+.btn:hover{background:var(--gold-deep);color:var(--white)}
+.btn-ghost{background:transparent;color:var(--gold-deep);border:1px solid var(--gold)}
+.btn-ghost:hover{background:var(--cream-warm);color:var(--gold-deep)}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+
+.field{margin-bottom:18px}
+.field label{display:block;font-weight:500;color:var(--ink);margin-bottom:6px;font-size:1rem}
+.field .req{color:var(--gold-deep);font-weight:700}
+.field .hint{display:block;font-size:.88rem;color:var(--ink-soft);font-weight:400;margin-top:2px}
+.field input,.field textarea,.field select{width:100%;font-family:inherit;font-size:1rem;
+  color:var(--ink);background:var(--white);border:1px solid var(--line);border-radius:9px;
+  padding:12px 14px;line-height:1.6}
+.field input:focus,.field textarea:focus,.field select:focus{outline:2px solid var(--gold);
+  outline-offset:1px;border-color:var(--gold)}
+.field textarea{min-height:130px;resize:vertical}
+.optional-head{margin:30px 0 4px;font-size:.9rem;letter-spacing:.06em;color:var(--gold-deep);font-weight:500}
+.form-status{margin-top:18px;padding:14px 18px;border-radius:9px;display:none}
+.form-status.ok{display:block;background:#eef6ec;border:1px solid #cfe3c8;color:#2c5320}
+.form-status.err{display:block;background:#fbeeee;border:1px solid #eccfcf;color:#7a2222}
+
+.books{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:26px}
+.bookcard{background:var(--white);border:1px solid var(--line);border-radius:12px;
+  padding:24px 24px 20px;display:flex;flex-direction:column}
+.bookcard h3{margin:0 0 6px;font-size:1.18rem}
+.bookcard .meta{font-size:.9rem;color:var(--gold-deep);font-weight:500;margin-bottom:10px}
+.bookcard p{font-size:.98rem;flex:1;margin-bottom:14px}
+.bookcard a.more{font-weight:600;text-decoration:none;border-bottom:1px solid var(--line);align-self:flex-start}
+.price-row{display:flex;gap:10px;align-items:baseline;margin:18px 0 4px}
+.price{font-size:1.6rem;font-weight:700;color:var(--ink)}
+.price-note{font-size:.94rem;color:var(--ink-soft)}
+.excerpt{background:var(--cream-warm);border-inline-start:4px solid var(--gold);
+  border-radius:8px;padding:20px 24px;margin:24px 0;font-size:1.02rem}
+.soon-tag{display:inline-block;background:var(--cream-warm);border:1px dashed var(--line);
+  color:var(--ink-soft);padding:6px 14px;border-radius:8px;font-size:.9rem}
+
+.contact-mail{display:inline-block;font-size:1.15rem;font-weight:500;background:var(--white);
+  border:1px solid var(--line);border-radius:10px;padding:14px 28px;margin-top:8px;direction:ltr}
+footer{background:var(--white);border-top:1px solid var(--line);padding:26px 0;
+  text-align:center;font-size:.9rem;color:var(--ink-soft)}
+footer a{text-decoration:none}
+
+@media(max-width:600px){
+  .hero{padding:54px 0 42px}.hero h1{font-size:1.95rem}.hero p.lede{font-size:1.08rem}
+  body{font-size:17px}.card{padding:22px}.topbar nav{gap:14px}
+}
