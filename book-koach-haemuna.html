@@ -41,6 +41,55 @@
 
 <section>
   <div class="wrap">
+
+    <div class="price-row">
+      <span class="price">חינם</span>
+      <span class="price-note">מהדורה אלקטרונית מלאה, קובץ PDF</span>
+    </div>
+
+    <!-- טופס ההורדה. שני שדות בלבד ובראש העמוד בכוונה: מי שהגיע לכאן מהודעת
+         ההפצה הובטח לו "קישור להורדה", ולכן הוא לא אמור לפגוש טופס פנייה
+         לייעוץ. הקישורים נחשפים מיד על המסך אחרי השליחה, והמייל נשלח במקביל. -->
+    <div class="card" id="book-box">
+      <h2 style="margin-top:0">לקבלת הספר במתנה</h2>
+      <p>נא למלא שם וכתובת דוא&quot;ל, והספר יישלח מיד למייל. הקישור להורדה יופיע כאן על המסך באותו רגע.</p>
+
+      <form id="book-form" novalidate>
+        <div class="field">
+          <label for="bname">שם ומשפחה <span class="req">*</span></label>
+          <input id="bname" name="name" type="text" required autocomplete="name">
+        </div>
+
+        <div class="field">
+          <label for="bemail">דוא&quot;ל <span class="req">*</span></label>
+          <input id="bemail" name="email" type="email" required autocomplete="email" dir="ltr">
+        </div>
+
+        <div class="field">
+          <label for="bphone">טלפון <span class="hint">לא חובה</span></label>
+          <input id="bphone" name="phone" type="tel" autocomplete="tel" inputmode="tel" dir="ltr">
+        </div>
+
+        <!-- מלכודת ספאם. אסור להזיז אותה בקיזוז שלילי (left/right: -9999px) -
+             במסמך RTL זה מותח את רוחב המסמך ודוחף את כל התוכן מחוץ למסך. -->
+        <input type="text" name="website" id="bwebsite" tabindex="-1" autocomplete="off"
+               aria-hidden="true"
+               style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;padding:0">
+
+        <button type="submit" class="btn" id="book-submit">שלחו לי את הספר</button>
+        <div class="form-status" id="book-status" role="status"></div>
+      </form>
+
+      <div id="book-links" hidden>
+        <p><strong>הספר מוכן להורדה, והוא גם נשלח למייל.</strong></p>
+        <div class="btn-row">
+          <a class="btn" href="/files/koach-haemuna-phone.pdf" download>להורדה לטלפון</a>
+          <a class="btn btn-ghost" href="/files/koach-haemuna.pdf" download>להורדה למחשב</a>
+        </div>
+        <p class="price-note">מהדורת הטלפון עומדה בעמוד קטן כדי שהאותיות ייצאו גדולות במסך. מהדורת המחשב היא בגודל A4.</p>
+      </div>
+    </div>
+
     <h2>על הספר</h2>
     <p>זה הספר הראשון שכתבתי, והוא יצא לאור לראשונה בשנת תשס&quot;ט. הוא נכתב מתוך שאלה אחת שחוזרת אצל אנשים שוב ושוב: <strong>מה עושים כשקשה, ואין תשובה טובה למה זה קורה.</strong></p>
     <p>הספר לא מנסה לתרץ את הקושי ולא להסביר אותו. הוא עוסק במה שכן בידיים של אדם &mdash; באמונה התמימה, כזאת שאינה תלויה בהבנה, וכיצד היא הופכת מרעיון להרגל שמחזיק ביום שגרתי ולא רק ברגע של משבר.</p>
@@ -49,21 +98,75 @@
     <h2>המהדורה האלקטרונית</h2>
     <p>המהדורה האלקטרונית עומדה מחדש לקריאה במסך וכוללת את סעיף ההסכמות במלואו.</p>
 
-    <div class="price-row">
-      <span class="price">חינם</span>
-      <span class="price-note">מהדורה אלקטרונית, קובץ PDF</span>
+    <div class="note">
+      <p><strong>קיים גם עותק מודפס.</strong> לבירור זמינות אפשר <a href="/contact.html?book=%D7%9B%D7%95%D7%97%20%D7%94%D7%90%D7%9E%D7%95%D7%A0%D7%94">לפנות דרך עמוד יצירת הקשר</a>.</p>
     </div>
 
     <div class="btn-row">
-      <a class="btn" href="/contact.html?book=%D7%9B%D7%95%D7%97%20%D7%94%D7%90%D7%9E%D7%95%D7%A0%D7%94">לקבלת עותק אלקטרוני</a>
       <a class="btn btn-ghost" href="/books.html">לכל הספרים</a>
-    </div>
-
-    <div class="note">
-      <p><strong>קיים גם עותק מודפס.</strong> לבירור זמינות אפשר לציין זאת בפנייה.</p>
     </div>
   </div>
 </section>
+
+<script>
+(function () {
+  var form = document.getElementById('book-form');
+  var status = document.getElementById('book-status');
+  var btn = document.getElementById('book-submit');
+  var links = document.getElementById('book-links');
+
+  function show(kind, msg) {
+    status.className = 'form-status ' + kind;
+    status.textContent = msg;
+  }
+
+  function reveal() {
+    links.hidden = false;
+    form.hidden = true;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = form.elements.name.value.trim();
+    var email = form.elements.email.value.trim();
+    if (!name) { show('err', 'נא למלא שם.'); form.elements.name.focus(); return; }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      show('err', 'כתובת הדוא"ל אינה תקינה.');
+      form.elements.email.focus();
+      return;
+    }
+
+    var data = {
+      kind: 'book',
+      book: 'כוח האמונה',
+      name: name,
+      email: email,
+      phone: form.elements.phone.value.trim(),
+      website: form.elements.website.value.trim(),
+      page: location.pathname
+    };
+
+    btn.disabled = true;
+    show('ok', 'שולח...');
+
+    fetch(window.LEAD_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      show('ok', 'נשלח למייל.');
+      reveal();
+    }).catch(function () {
+      // גם אם המייל נכשל, מי שמילא לא נשאר בלי הספר.
+      show('err', 'המשלוח למייל נתקל בתקלה, אבל אפשר להוריד את הספר ישירות כאן למטה.');
+      reveal();
+    }).then(function () {
+      btn.disabled = false;
+    });
+  });
+})();
+</script>
 </main>
 
 <footer>
