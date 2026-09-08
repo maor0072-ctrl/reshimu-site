@@ -19,7 +19,7 @@
          לייעוץ. הקישורים נחשפים מיד על המסך אחרי השליחה, והמייל נשלח במקביל. -->
     <div class="card" id="book-box">
       <h2 style="margin-top:0">לקבלת הספר במתנה</h2>
-      <p>נא למלא שם וכתובת דוא&quot;ל, והספר יישלח מיד למייל. הקישור להורדה יופיע כאן על המסך באותו רגע.</p>
+      <p>נא למלא שם, טלפון נייד וכתובת דוא&quot;ל, והספר יישלח מיד למייל. הקישור להורדה יופיע כאן על המסך באותו רגע.</p>
 
       <form id="book-form" novalidate>
         <div class="field">
@@ -28,13 +28,18 @@
         </div>
 
         <div class="field">
+          <label for="bphone">טלפון נייד <span class="req">*</span></label>
+          <input id="bphone" name="phone" type="tel" required autocomplete="tel" inputmode="tel" dir="ltr">
+        </div>
+
+        <div class="field">
           <label for="bemail">דוא&quot;ל <span class="req">*</span></label>
           <input id="bemail" name="email" type="email" required autocomplete="email" dir="ltr">
         </div>
 
         <div class="field">
-          <label for="bphone">טלפון <span class="hint">לא חובה</span></label>
-          <input id="bphone" name="phone" type="tel" autocomplete="tel" inputmode="tel" dir="ltr">
+          <label for="baddress">כתובת מגורים <span class="hint">לא חובה</span></label>
+          <input id="baddress" name="address" type="text" autocomplete="street-address">
         </div>
 
         <!-- מלכודת ספאם. אסור להזיז אותה בקיזוז שלילי (left/right: -9999px) -
@@ -87,6 +92,13 @@
     status.textContent = msg;
   }
 
+  // נייד ישראלי (05X עם או בלי קידומת 972), או מספר בינלאומי עם + ו-9 ספרות ומעלה.
+  function validPhone(v) {
+    var d = v.replace(/[\s\-().]/g, '');
+    if (/^(\+?972|0)5\d{8}$/.test(d)) return true;
+    return /^\+\d{9,15}$/.test(d);
+  }
+
   function reveal() {
     links.hidden = false;
     form.hidden = true;
@@ -95,8 +107,14 @@
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var name = form.elements.name.value.trim();
+    var phone = form.elements.phone.value.trim();
     var email = form.elements.email.value.trim();
     if (!name) { show('err', 'נא למלא שם.'); form.elements.name.focus(); return; }
+    if (!validPhone(phone)) {
+      show('err', 'נא למלא מספר טלפון נייד תקין.');
+      form.elements.phone.focus();
+      return;
+    }
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
       show('err', 'כתובת הדוא"ל אינה תקינה.');
       form.elements.email.focus();
@@ -108,7 +126,8 @@
       book: 'כוח האמונה',
       name: name,
       email: email,
-      phone: form.elements.phone.value.trim(),
+      phone: phone,
+      address: form.elements.address.value.trim(),
       website: form.elements.website.value.trim(),
       page: location.pathname
     };

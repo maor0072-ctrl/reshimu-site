@@ -156,7 +156,9 @@ export default {
     if (d.website) return new Response("ok", { status: 200, headers });
 
     const isBook = d.kind === "book";
-    const required = isBook ? ["name", "email"] : ["name", "phone", "email", "subject"];
+    const required = isBook
+      ? ["name", "phone", "email"]
+      : ["name", "phone", "email", "subject"];
     for (const f of required) {
       if (!d[f] || !String(d[f]).trim())
         return new Response("missing " + f, { status: 400, headers });
@@ -164,6 +166,15 @@ export default {
     const email = String(d.email).trim();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
       return new Response("bad email", { status: 400, headers });
+
+    // אימות הנייד בצד השרת - הבדיקה בדפדפן לבדה ניתנת לעקיפה, ובלי מספר
+    // תקין הרישום חסר את מה שהוא נועד לאסוף.
+    // נייד ישראלי (05X, עם או בלי 972) או מספר בינלאומי עם + ו-9 ספרות ומעלה.
+    if (isBook) {
+      const digits = String(d.phone).trim().replace(/[\s\-().]/g, "");
+      if (!/^(\+?972|0)5\d{8}$/.test(digits) && !/^\+\d{9,15}$/.test(digits))
+        return new Response("bad phone", { status: 400, headers });
+    }
 
     if (isBook) {
       // הספר לפונה - זה העיקר, ולכן הוא נשלח ראשון.
@@ -185,8 +196,9 @@ export default {
         `<h2 style="margin:0 0 14px">הספר נשלח למבקש</h2>` +
         `<table style="border-collapse:collapse">` +
         row("שם ומשפחה", d.name) +
+        row("טלפון נייד", d.phone) +
         row("דוא\"ל", email) +
-        row("טלפון", d.phone) +
+        row("כתובת מגורים", d.address) +
         row("הספר", d.book || "כוח האמונה") +
         row("סטטוס המשלוח", okBook ? "נשלח בהצלחה" : "נכשל - צריך לשלוח ידנית") +
         `</table>` +
