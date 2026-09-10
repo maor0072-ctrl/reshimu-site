@@ -116,6 +116,10 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     }).then(function (r) {
+      if (r.status === 422) {
+        show('err', 'נראה שיש שגיאת כתיב בכתובת הדוא"ל - הדומיין שאחרי ה-@ אינו קיים. נא לבדוק ולשלוח שוב.');
+        return;
+      }
       if (!r.ok) throw new Error(r.status);
       form.reset();
       show('ok', 'הבקשה נשלחה. בעז"ה ייצרו איתך קשר בהקדם.');

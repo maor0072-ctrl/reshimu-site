@@ -173,6 +173,14 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     }).then(function (r) {
+      // 422 = הדומיין שאחרי ה-@ אינו קיים. כאן דווקא לא חושפים את
+      // הקישורים: הכתובת שגויה, המייל לעולם לא יגיע, והדבר הנכון הוא
+      // שהטופס יישאר פתוח עד שהיא תתוקן.
+      if (r.status === 422) {
+        show('err', 'נראה שיש שגיאת כתיב בכתובת הדוא"ל - הדומיין שאחרי ה-@ אינו קיים. נא לבדוק ולשלוח שוב.');
+        form.elements.email.focus();
+        return;
+      }
       if (!r.ok) throw new Error(r.status);
       show('ok', 'נשלח למייל.');
       reveal();

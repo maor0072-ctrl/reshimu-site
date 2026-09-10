@@ -135,6 +135,34 @@ function bookHtml(name) {
   );
 }
 
+/** האם לדומיין יש בכלל שרת דואר, לפי DNS-over-HTTPS של קלאודפלייר.
+ *
+ * **נכשל לטובת הפונה.** אם השאילתה עצמה נופלת (רשת, timeout, תשובה
+ * שאינה JSON) הפונקציה מחזירה true. עדיף לשלוח ספר לכתובת שגויה מאשר
+ * לחסום אדם אמיתי בגלל תקלה אצלנו. רק תשובת DNS מפורשת ושלילית חוסמת.
+ */
+async function domainAcceptsMail(domain) {
+  const ask = async (type) => {
+    const r = await fetch(
+      `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(domain)}&type=${type}`,
+      { headers: { accept: "application/dns-json" } }
+    );
+    if (!r.ok) throw new Error(String(r.status));
+    return r.json();
+  };
+  try {
+    const mx = await ask("MX");
+    if (mx.Status === 3) return false;            // NXDOMAIN - הדומיין לא קיים
+    if (mx.Status !== 0) return true;             // תקלת DNS - לא חוסמים
+    if (Array.isArray(mx.Answer) && mx.Answer.length) return true;
+    // בלי MX, שרת דואר עדיין נופל חזרה על רשומת A של הדומיין עצמו
+    const a = await ask("A");
+    return a.Status === 0 && Array.isArray(a.Answer) && a.Answer.length > 0;
+  } catch {
+    return true;
+  }
+}
+
 export default {
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
@@ -166,6 +194,12 @@ export default {
     const email = String(d.email).trim();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
       return new Response("bad email", { status: 400, headers });
+
+    // הדומיין חייב באמת לקבל דואר. בדיקת המבנה לבדה מקבלת בשמחה
+    // "gmail.comh", וזה בדיוק מה שקרה ב-10.9.2026: הספר נשלח, ג'ימייל
+    // החזיר NXDOMAIN, והפונה כלל לא ידעה שהיא לא תקבל אותו.
+    if (!(await domainAcceptsMail(email.split("@").pop().toLowerCase())))
+      return new Response("bad email domain", { status: 422, headers });
 
     // אימות הנייד בצד השרת - הבדיקה בדפדפן לבדה ניתנת לעקיפה, ובלי מספר
     // תקין הרישום חסר את מה שהוא נועד לאסוף.
