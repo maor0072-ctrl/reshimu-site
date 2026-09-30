@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>טלפרומטר</title>
+<style>
+:root{--bg:#0c1116;--panel:#141b23;--text:#f4f0e7;--muted:#9fb0bd;--gold:#e9c46a;--teal:#6fb3ab;--accent:#8ad9cd;--line:#1f2a34;--fs:34px}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);
+ font-family:"Assistant","Segoe UI","Arial",sans-serif;overflow:hidden}
+button,select,input,a.btn{font-family:inherit}
+#topbar,#bottombar{position:fixed;left:0;right:0;z-index:40;display:flex;gap:12px;align-items:center;
+ padding:8px 14px;flex-wrap:wrap;background:rgba(16,22,29,.94);backdrop-filter:blur(8px)}
+#topbar{top:0;border-bottom:1px solid var(--line)}
+#bottombar{bottom:0;border-top:1px solid var(--line);justify-content:center}
+.brand{font-weight:800;color:var(--gold);font-size:16px;letter-spacing:.3px;margin-inline-end:auto}
+label{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
+select,input[type=range]{accent-color:var(--teal)}
+select{background:#0f151c;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:5px 8px;max-width:230px}
+button,a.btn{background:#1b232c;color:var(--text);border:1px solid var(--line);border-radius:10px;
+ padding:7px 12px;cursor:pointer;font-size:14px;transition:.15s}
+button:hover,a.btn:hover{background:#26313c}
+button.primary{background:linear-gradient(180deg,#2f8f83,#1f6f65);border-color:#2f8f83;font-weight:700}
+button.danger{background:linear-gradient(180deg,#c0492f,#94331f);border-color:#c0492f;font-weight:700}
+.chk{cursor:pointer}.chk input{width:16px;height:16px}
+.hidden{display:none!important}
+.divider{width:1px;height:26px;background:var(--line);margin:0 4px}
+#speedval,#fsval{color:var(--text);min-width:26px;text-align:center}
+.camwrap{position:fixed;top:54px;left:50%;transform:translateX(-50%);z-index:35;width:250px}
+.camwrap video{width:100%;border-radius:16px;border:2px solid rgba(233,196,106,.55);
+ background:#000;box-shadow:0 8px 30px rgba(0,0,0,.5);transform:scaleX(-1)}
+.rectag{position:absolute;top:8px;inset-inline-start:10px;background:rgba(192,57,43,.92);
+ color:#fff;font-weight:700;font-size:12px;padding:3px 8px;border-radius:20px}
+#reader{position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;
+ padding:40vh 11vw 62vh;text-align:center;direction:rtl;font-size:var(--fs);line-height:1.5}
+#reader.mirror{transform:scaleX(-1)}
+#reader::-webkit-scrollbar{width:8px}#reader::-webkit-scrollbar-thumb{background:#2b3742;border-radius:8px}
+.body{margin:.55em 0;color:var(--text);text-wrap:balance}
+.heading{margin:1.1em 0 .35em;font-size:.82em;font-weight:700;color:var(--accent);letter-spacing:.3px}
+.chapter{margin:1.7em 0 .5em;font-size:1.18em;font-weight:800;color:var(--gold)}
+.chapter .num{display:block;font-size:.42em;font-weight:700;color:var(--teal);letter-spacing:2px;margin-bottom:.3em}
+.module{margin:2.4em auto 1.2em;font-size:.66em;font-weight:800;color:var(--teal);letter-spacing:1px;
+ max-width:80%;padding-bottom:.6em;border-bottom:1px solid rgba(111,179,171,.35)}
+.selfwork{margin:1.1em auto;max-width:85%;font-size:.9em;color:#fbe7bf;background:rgba(233,196,106,.10);
+ border-inline-start:4px solid var(--gold);border-radius:12px;padding:.7em 1em;text-align:start}
+.selfwork::before{content:"✍️ ";}
+.pause{margin:1.4em auto;max-width:70%;text-align:center;font-size:.8em;font-weight:800;
+ color:#0c1116;background:linear-gradient(180deg,#e9c46a,#d4a94c);border-radius:14px;
+ padding:.45em .8em;letter-spacing:1px;box-shadow:0 6px 22px rgba(233,196,106,.25)}
+/* deliberately no icon before the text: a symbol at the start of an RTL
+   line gets reordered to the far side, and this is a screen the speaker
+   is reading while the camera rolls */
+.space{height:.4em}
+#guide{position:fixed;left:0;right:0;top:34vh;height:0;z-index:20;pointer-events:none;
+ border-top:2px solid rgba(138,217,205,.18);box-shadow:0 0 40px 18px rgba(138,217,205,.05)}
+#countdown{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
+ background:rgba(8,11,15,.55);backdrop-filter:blur(2px)}
+#cdnum{font-size:22vh;font-weight:800;color:var(--gold);text-shadow:0 6px 40px rgba(0,0,0,.6)}
+#warn{position:fixed;top:52px;left:50%;transform:translateX(-50%);z-index:55;max-width:640px;
+ background:#3a2417;border:1px solid #7a4a2a;color:#ffdcc0;padding:12px 16px;border-radius:12px;
+ font-size:14px;text-align:center;line-height:1.5}
+</style>
+<style>
+/* התאמות לנייד - נוספו ידנית לגרסת הטלפון */
+@media (max-width: 820px){
+  .brand{display:none}
+  #topbar,#bottombar{gap:6px;padding:6px 8px}
+  #topbar label, #bottombar label{font-size:11px;gap:3px}
+  #topbar select{max-width:108px;padding:4px 6px;font-size:12px}
+  #topbar #micsel{display:none}
+  #topbar label[for], #topbar .divider{display:none}
+  #prevch,#nextch,#chapters{display:none}
+  #topbar label:has(#chapters){display:none}
+  #topbar label:has(#micsel){display:none}
+  #topbar label:nth-of-type(2){display:none}
+  button,a.btn{padding:9px 10px;font-size:13px}
+  #startrec,#stoprec{font-size:15px;padding:11px 16px}
+  .camwrap{width:88px;left:8px;right:auto;transform:none;top:48px;bottom:auto;opacity:.92}
+  .camwrap video{border-radius:12px}
+  #reader{padding:32vh 6vw 56vh;line-height:1.45}
+  input[type=range]{width:78px}
+  #bottombar{flex-wrap:wrap;justify-content:center;gap:6px 10px}
+}
+</style>
+
+</head>
+<body>
+
+<div id="warn" class="hidden"></div>
+
+<div class="camwrap" id="camwrap">
+  <video id="cam" autoplay playsinline muted></video>
+  <div class="rectag hidden" id="rectag">● REC <span id="rectime">00:00</span></div>
+</div>
+
+<header id="topbar">
+  <div class="brand">טלפרומטר</div>
+  <label>מצלמה <select id="camsel"><option>— לחצי "הפעל מצלמה" —</option></select></label>
+  <label>מיקרופון <select id="micsel"><option>—</option></select></label>
+  <button id="camstart">🎥 הפעל מצלמה</button>
+  <label class="chk"><input type="checkbox" id="showcam" checked> תצוגת מצלמה</label>
+  <span class="divider"></span>
+  <button id="prevch" title="פרק קודם">›</button>
+  <label>קפיצה לפרק <select id="chapters"></select></label>
+  <button id="nextch" title="פרק הבא">‹</button>
+</header>
+
+<main id="reader"></main>
+<div id="guide"></div>
+
+<div id="countdown" class="hidden"><span id="cdnum">3</span></div>
+
+<footer id="bottombar">
+  <button id="startrec" class="primary">● התחל הקלטה + גלילה</button>
+  <button id="stoprec" class="danger hidden">■ עצור והורד</button>
+  <span class="divider"></span>
+  <button id="playpause">▶ נגן</button>
+  <button id="totop">⤒ להתחלה</button>
+  <label>מהירות <input type="range" id="speed" min="8" max="150" value="47"><span id="speedval">47</span></label>
+  <label>גודל <input type="range" id="fontsize" min="22" max="80" value="34"><span id="fsval">34</span></label>
+  <label class="chk"><input type="checkbox" id="mirror"> מראה</label>
+  <button id="fs">⛶ מסך מלא</button>
+  <a id="dl" class="btn hidden" download>⬇ הורד הקלטה</a>
+</footer>
+
+<script>
+const BLOCKS = [{"type": "body", "text": "יש מצווה מהתורה לשמוח בחג. ושמחת בחגיך. אבל רגע. איך אפשר בכלל לצוות על אדם להרגיש שמח?"}, {"type": "space"}, {"type": "body", "text": "תשמעו איך הפסוק כתוב. ושמחת בחגיך, אתה ובנך ובתך, והלוי והגר והיתום והאלמנה אשר בשעריך. התורה אומרת לך תשמח, ומיד ממלאת את השורה באנשים אחרים."}, {"type": "space"}, {"type": "body", "text": "השמחה שלך תגיע כשאתה תשמח אחרים."}, {"type": "space"}, {"type": "body", "text": "והרמב\"ם כותב את זה בלי לרכך. מי שנועל את דלתות חצרו, ואוכל ושותה הוא ובניו ואשתו, ואינו מאכיל ומשקה לעניים, אין זו שמחת מצווה אלא שמחת כריסו."}, {"type": "space"}, {"type": "body", "text": "כי יהודי, בשורש הנשמה שלו, שמח כשיהודי אחר שמח."}, {"type": "space"}, {"type": "body", "text": "ולכן אתה לא צריך לסחוט שמחה מתוך עצמך בכוח. תשמח מישהו אחר, והשמחה תחזור אליך מהדלת האחורית. שמחה היא דבר מדבק."}, {"type": "space"}, {"type": "body", "text": "אז תתחילו לשמח."}, {"type": "space"}, {"type": "body", "text": "אם זה נגע בך, שתפו את זה עם מישהו שצריך לשמוע."}];
+const NAV = [];
+const $ = s => document.querySelector(s);
+const reader = $('#reader');
+
+(function render(){
+  const frag = document.createDocumentFragment();
+  BLOCKS.forEach(b=>{
+    const el = document.createElement('div');
+    el.className = b.type;
+    if(b.id) el.id = b.id;
+    if(b.type==='chapter'){
+      el.innerHTML = '<span class="num">'+(b.num||'')+'</span>'+b.text;
+    } else if(b.type!=='space'){
+      el.textContent = b.text;
+    }
+    frag.appendChild(el);
+  });
+  const pad = document.createElement('div'); pad.style.height='40vh';
+  frag.appendChild(pad);
+  reader.appendChild(frag);
+})();
+
+const order = [];
+(function buildNav(){
+  const sel = $('#chapters');
+  NAV.forEach(g=>{
+    const og = document.createElement('optgroup'); og.label = g.module||'—';
+    g.chapters.forEach(c=>{
+      const o=document.createElement('option'); o.value=c.id; o.textContent=c.label;
+      og.appendChild(o); order.push(c.id);
+    });
+    if(g.chapters.length) sel.appendChild(og);
+  });
+})();
+function jump(id){
+  const el = document.getElementById(id);
+  if(el){ reader.scrollTop = el.offsetTop - reader.clientHeight*0.30; }
+}
+$('#chapters').addEventListener('change', e=>jump(e.target.value));
+$('#prevch').addEventListener('click', ()=>step(-1));
+$('#nextch').addEventListener('click', ()=>step(1));
+function step(d){
+  let i = order.indexOf($('#chapters').value);
+  i = Math.max(0, Math.min(order.length-1, (i<0?0:i)+d));
+  $('#chapters').value = order[i]; jump(order[i]);
+}
+
+let stream=null;
+function noMedia(){ return !(navigator.mediaDevices && navigator.mediaDevices.getUserMedia); }
+async function listDevices(){
+  const devs = await navigator.mediaDevices.enumerateDevices();
+  fillSel($('#camsel'), devs.filter(d=>d.kind==='videoinput'), localStorage.getItem('camId'), true);
+  fillSel($('#micsel'), devs.filter(d=>d.kind==='audioinput'), localStorage.getItem('micId'), false);
+}
+function fillSel(sel, devs, saved, isCam){
+  sel.innerHTML='';
+  devs.forEach((d,i)=>{
+    const o=document.createElement('option');
+    o.value=d.deviceId; o.textContent = d.label || ((isCam?'מצלמה ':'מיקרופון ')+(i+1));
+    sel.appendChild(o);
+  });
+  let pick = saved && devs.find(d=>d.deviceId===saved);
+  if(!pick && isCam) pick = devs.find(d=>/lifecam|hd-?\s*3000|external|usb/i.test(d.label));
+  if(pick) sel.value = pick.deviceId;
+}
+function isRealId(v){ return !!v && !/\s/.test(v) && (v.length>=16 || v==='default' || v==='communications'); }
+async function openStream(camId, micId){
+  if(stream) stream.getTracks().forEach(t=>t.stop());
+  return await navigator.mediaDevices.getUserMedia({
+    video: camId ? {deviceId:{exact:camId}, width:{ideal:1080}, height:{ideal:1920}} : {facingMode:'user', width:{ideal:1080}, height:{ideal:1920}},
+    audio: micId ? {deviceId:{exact:micId}} : true
+  });
+}
+async function startCamera(){
+  if(noMedia()){ showWarn(); return; }
+  let wantCam = isRealId($('#camsel').value) ? $('#camsel').value : '';
+  let wantMic = isRealId($('#micsel').value) ? $('#micsel').value : '';
+  try{
+    try{
+      stream = await openStream(wantCam, wantMic);
+    }catch(err){
+      if(err && (err.name==='OverconstrainedError' || err.name==='NotFoundError')){
+        stream = await openStream('', '');
+        wantCam=''; wantMic='';
+      } else { throw err; }
+    }
+    $('#cam').srcObject = stream;
+    if(wantCam) localStorage.setItem('camId', wantCam);
+    if(wantMic) localStorage.setItem('micId', wantMic);
+    await listDevices();
+    const picked = $('#camsel').value;
+    if(isRealId(picked) && picked!==wantCam){ return startCamera(); }
+  }catch(e){
+    let hint;
+    if(e.name==='NotReadableError') hint='נראה שתוכנה אחרת (זום/טימס/מצלמת ווינדוס) תופסת את המצלמה. סגרי אותה ונסי שוב.';
+    else if(e.name==='NotAllowedError') hint='הדפדפן חסם את המצלמה. לחצי על אייקון המצלמה שליד שורת הכתובת, בחרי "אפשר", וטעני מחדש.';
+    else if(e.name==='NotFoundError') hint='לא נמצאה מצלמה מחוברת. ודאי שכבל ה-USB מחובר, ונסי שוב.';
+    else hint='נסי לבחור מצלמה אחרת מהרשימה, או לרענן את הדף (F5).';
+    alert('לא הצלחתי לפתוח את המצלמה. ('+ (e.name||'שגיאה') +')\n\n'+hint);
+  }
+}
+$('#camstart').addEventListener('click', startCamera);
+$('#camsel').addEventListener('change', startCamera);
+$('#micsel').addEventListener('change', startCamera);
+$('#showcam').addEventListener('change', e=>{ $('#camwrap').style.display = e.target.checked?'block':'none'; });
+
+let recorder=null, chunks=[], recTimer=null, recStart=0;
+function pickMime(){
+  return ['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm']
+    .find(m=>window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || '';
+}
+function two(n){ return String(n).padStart(2,'0'); }
+function updateRecTime(){
+  const s=Math.floor((Date.now()-recStart)/1000);
+  $('#rectime').textContent = two(Math.floor(s/60))+':'+two(s%60);
+}
+function startRecording(){
+  if(!stream){ alert('צריך קודם להפעיל מצלמה (הכפתור 🎥).'); return false; }
+  chunks=[]; const mime=pickMime();
+  recorder = new MediaRecorder(stream, mime?{mimeType:mime, videoBitsPerSecond:6000000}:{});
+  recorder.ondataavailable = e=>{ if(e.data && e.data.size) chunks.push(e.data); };
+  recorder.onstop = ()=>{
+    const blob = new Blob(chunks, {type: mime||'video/webm'});
+    const url = URL.createObjectURL(blob);
+    const d = new Date();
+    const a = $('#dl');
+    a.href = url;
+    a.download = 'הקלטה_'+d.getFullYear()+'-'+two(d.getMonth()+1)+'-'+two(d.getDate())+'_'+two(d.getHours())+two(d.getMinutes())+'.webm';
+    a.classList.remove('hidden');
+    a.click();
+  };
+  recorder.start(1000);
+  recStart = Date.now();
+  $('#rectag').classList.remove('hidden');
+  recTimer = setInterval(updateRecTime, 500);
+  return true;
+}
+function stopRecording(){
+  if(recorder && recorder.state!=='inactive') recorder.stop();
+  clearInterval(recTimer);
+  $('#rectag').classList.add('hidden');
+}
+
+let scrolling=false, rafId=null, lastT=0, acc=0, speed=47;
+function tick(t){
+  if(!scrolling) return;
+  if(!lastT) lastT=t;
+  const dt=(t-lastT)/1000; lastT=t;
+  acc += speed*dt;
+  const px=Math.floor(acc);
+  if(px>=1){ reader.scrollTop += px; acc-=px; }
+  if(reader.scrollTop + reader.clientHeight >= reader.scrollHeight-2){ pauseScroll(); return; }
+  rafId=requestAnimationFrame(tick);
+}
+function playScroll(){ if(scrolling)return; scrolling=true; lastT=0; rafId=requestAnimationFrame(tick); $('#playpause').textContent='⏸ השהה'; }
+function pauseScroll(){ scrolling=false; if(rafId)cancelAnimationFrame(rafId); $('#playpause').textContent='▶ נגן'; }
+function toggleScroll(){ scrolling?pauseScroll():playScroll(); }
+$('#playpause').addEventListener('click', toggleScroll);
+$('#totop').addEventListener('click', ()=>{ reader.scrollTop=0; });
+
+function countdown(n){
+  return new Promise(res=>{
+    const el=$('#countdown'), num=$('#cdnum');
+    el.classList.remove('hidden'); num.textContent=n;
+    const iv=setInterval(()=>{ n--; if(n<=0){ clearInterval(iv); el.classList.add('hidden'); res(); } else num.textContent=n; },800);
+  });
+}
+function clapPrompt(){
+  return new Promise(res=>{
+    const el=$('#countdown'), num=$('#cdnum');
+    num.innerHTML='👏<div style="font-size:.16em;margin-top:.15em">מחאי כף — נקודת סנכרון</div>';
+    el.classList.remove('hidden');
+    setTimeout(()=>{ el.classList.add('hidden'); res(); }, 2000);
+  });
+}
+$('#startrec').addEventListener('click', async ()=>{
+  if(!stream){ await startCamera(); if(!stream) return; }
+  await countdown(3);
+  if(startRecording()){
+    $('#startrec').classList.add('hidden');
+    $('#stoprec').classList.remove('hidden');
+    await clapPrompt();
+    playScroll();
+  }
+});
+$('#stoprec').addEventListener('click', ()=>{
+  stopRecording(); pauseScroll();
+  $('#stoprec').classList.add('hidden');
+  $('#startrec').classList.remove('hidden');
+});
+
+$('#speed').addEventListener('input', e=>{ speed=+e.target.value; $('#speedval').textContent=speed; });
+$('#fontsize').addEventListener('input', e=>{ document.documentElement.style.setProperty('--fs', e.target.value+'px'); $('#fsval').textContent=e.target.value; });
+$('#mirror').addEventListener('change', e=>{ reader.classList.toggle('mirror', e.target.checked); });
+$('#fs').addEventListener('click', ()=>{ if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); });
+
+document.addEventListener('keydown', e=>{
+  if(['SELECT','INPUT','TEXTAREA'].includes(e.target.tagName)) return;
+  if(e.code==='Space'){ e.preventDefault(); toggleScroll(); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); $('#speed').value=Math.min(150,speed+5); speed=+$('#speed').value; $('#speedval').textContent=speed; }
+  else if(e.key==='ArrowDown'){ e.preventDefault(); $('#speed').value=Math.max(8,speed-5); speed=+$('#speed').value; $('#speedval').textContent=speed; }
+  else if(e.key==='+'||e.key==='='){ let v=Math.min(80,+$('#fontsize').value+2); $('#fontsize').value=v; document.documentElement.style.setProperty('--fs',v+'px'); $('#fsval').textContent=v; }
+  else if(e.key==='-'){ let v=Math.max(22,+$('#fontsize').value-2); $('#fontsize').value=v; document.documentElement.style.setProperty('--fs',v+'px'); $('#fsval').textContent=v; }
+  else if(e.key==='t'||e.key==='T'){ reader.scrollTop=0; }
+  else if(e.key==='f'||e.key==='F'){ $('#fs').click(); }
+});
+
+function showWarn(){
+  const w=$('#warn');
+  w.innerHTML='כדי לאפשר גישה למצלמה, הפעילי את הדף דרך הקובץ <b>「הפעל טלפרומטר」</b> (שרת מקומי). בדפדפן כרום/edge זה גם עובד בפתיחה ישירה — פשוט אשרי את בקשת המצלמה.';
+  w.classList.remove('hidden');
+  setTimeout(()=>w.classList.add('hidden'), 12000);
+}
+if(noMedia()) showWarn();
+</script>
+</body>
+</html>
