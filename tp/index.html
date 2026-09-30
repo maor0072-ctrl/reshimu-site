@@ -122,6 +122,7 @@ button.danger{background:linear-gradient(180deg,#c0492f,#94331f);border-color:#c
   <label>גודל <input type="range" id="fontsize" min="22" max="80" value="34"><span id="fsval">34</span></label>
   <label class="chk"><input type="checkbox" id="mirror"> מראה</label>
   <button id="fs">⛶ מסך מלא</button>
+  <button id="share" class="primary hidden">📤 שלח את ההקלטה</button>
   <a id="dl" class="btn hidden" download>⬇ הורד הקלטה</a>
 </footer>
 
@@ -233,11 +234,18 @@ $('#camsel').addEventListener('change', startCamera);
 $('#micsel').addEventListener('change', startCamera);
 $('#showcam').addEventListener('change', e=>{ $('#camwrap').style.display = e.target.checked?'block':'none'; });
 
-let recorder=null, chunks=[], recTimer=null, recStart=0;
+let recorder=null, chunks=[], recTimer=null, recStart=0, lastFile=null;
 function pickMime(){
-  return ['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm']
+  return ['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4',
+          'video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm']
     .find(m=>window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || '';
 }
+document.addEventListener('click', ev=>{
+  if(!ev.target.closest || !ev.target.closest('#share')) return;
+  if(!lastFile) return;
+  navigator.share({files:[lastFile], title:'הקלטה'})
+    .catch(e=>{ if(e.name!=='AbortError') alert('השיתוף נכשל: '+(e.message||e.name)); });
+});
 function two(n){ return String(n).padStart(2,'0'); }
 function updateRecTime(){
   const s=Math.floor((Date.now()-recStart)/1000);
@@ -249,13 +257,19 @@ function startRecording(){
   recorder = new MediaRecorder(stream, mime?{mimeType:mime, videoBitsPerSecond:2500000}:{});
   recorder.ondataavailable = e=>{ if(e.data && e.data.size) chunks.push(e.data); };
   recorder.onstop = ()=>{
-    const blob = new Blob(chunks, {type: mime||'video/webm'});
-    const url = URL.createObjectURL(blob);
+    const mt = mime||'video/webm';
+    const ext = mt.indexOf('mp4')>=0 ? 'mp4' : 'webm';
+    const blob = new Blob(chunks, {type: mt});
     const d = new Date();
+    const name = 'הקלטה_'+d.getFullYear()+'-'+two(d.getMonth()+1)+'-'+two(d.getDate())+'_'+two(d.getHours())+two(d.getMinutes())+'.'+ext;
+    try{ lastFile = new File([blob], name, {type: mt}); }catch(e){ lastFile=null; }
+    const url = URL.createObjectURL(blob);
     const a = $('#dl');
     a.href = url;
-    a.download = 'הקלטה_'+d.getFullYear()+'-'+two(d.getMonth()+1)+'-'+two(d.getDate())+'_'+two(d.getHours())+two(d.getMinutes())+'.webm';
+    a.download = name;
     a.classList.remove('hidden');
+    const sh = document.querySelector('#share');
+    if(sh && lastFile && navigator.canShare && navigator.canShare({files:[lastFile]})) sh.classList.remove('hidden');
     a.click();
   };
   recorder.start(1000);
