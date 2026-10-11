@@ -93,3 +93,8 @@ footer a{text-decoration:none}
   .hero{padding:54px 0 42px}.hero h1{font-size:1.95rem}.hero p.lede{font-size:1.08rem}
   body{font-size:17px}.card{padding:22px}.topbar nav{gap:14px}
 }
+
+footer p{margin:0}
+footer .foot-biz{line-height:1.9}
+footer .foot-legal{margin-top:8px;font-size:.86rem}
+footer .foot-legal a{color:var(--ink-soft);text-decoration:underline}
