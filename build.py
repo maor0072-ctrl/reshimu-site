@@ -23,6 +23,12 @@ PAGES = {
                    "האמונה, לצד כלים מהאקדמיה וניסיון של שנים."),
     "contact.html": ("contact", f"יצירת קשר | {SITE}",
                      "שליחת בקשה לייעוץ. מלאו את הפרטים ובעז\"ה ייצרו איתכם קשר."),
+    "ai.html": ("ai", f"בינה מלאכותית | {SITE}",
+                "מערכות בינה מלאכותית שנבנו ועובדות בפועל - מסך הכיתה, אתרים, "
+                "מרכז פיקוד מהטלפון - ושיעור על בינה מלאכותית שמועבר דרך המערכת עצמה."),
+    "kita.html": ("ai", f"מסך הכיתה | {SITE}",
+                  "המורה או המרצה שולט מהטלפון במסך הגדול בחדר, בלי התקנה ובלי כבל, "
+                  "ופניו אל הכיתה כל הזמן."),
     "books.html": ("books", f"הספרים | {SITE}",
                    "כוח האמונה, לחיות תומר דבורה ורק הנשמה - מהדורות אלקטרוניות "
                    "לקריאה בטלפון, ועותקים מודפסים."),
@@ -54,7 +60,7 @@ def main():
     for name, (active, title, desc) in PAGES.items():
         h = (head.replace("{{TITLE}}", esc(title)).replace("{{DESC}}", esc(desc))
                  .replace("{{LEAD_ENDPOINT}}", LEAD_ENDPOINT))
-        for key in ("home", "books", "contact"):
+        for key in ("home", "ai", "books", "contact"):
             h = h.replace("{{NAV_%s}}" % key.upper(),
                           ' class="active"' if key == active else "")
         body = (HERE / "pages" / name).read_text(encoding="utf-8")
