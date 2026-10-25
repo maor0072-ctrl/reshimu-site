@@ -15,7 +15,13 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 SITE = "הרב יעקב מאור"
-LEAD_ENDPOINT = "https://reshimu-lead.maor0072.workers.dev/"
+# כתובת workers.dev נחסמת בשקט אצל חלק מהגולשים, ולכן ה-Worker יושב על
+# דומיין של רשימו: רשומת A מוסווית (192.0.2.1) מסומנת כמוגנת בקלאודפלייר,
+# ומעליה route בתבנית api.reshimu.co.il/* שמפנה לסקריפט reshimu-lead.
+# אומת 25.10.2026: POST מחזיר 200, OPTIONS מחזיר 204 ו-GET מחזיר 405 - כלומר
+# ה-Worker עצמו עונה ולא שגיאת קלאודפלייר. אין להחליף את הכתובת כאן לפני
+# שה-route קיים ועונה, אחרת הטופס מת לכולם ולא רק לחלק.
+LEAD_ENDPOINT = "https://api.reshimu.co.il/"
 
 PAGES = {
     "index.html": ("home", f"{SITE} | ייעוץ אישי ועסקי",
