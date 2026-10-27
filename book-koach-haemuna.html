@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>כוח האמונה | הרב יעקב מאור</title>
-<meta name="description" content="כוח האמונה - אמונה תמימה כדרך מעשית לעבור בה ימים קשים. מהדורה אלקטרונית לקריאה בטלפון, להורדה חינם.">
+<meta name="description" content="כוח האמונה - אמונה תמימה כדרך מעשית לעבור בה ימים קשים. מהדורה אלקטרונית לקריאה בטלפון, מחולקת בחינם.">
 <meta name="robots" content="index, follow">
 <meta property="og:title" content="כוח האמונה | הרב יעקב מאור">
-<meta property="og:description" content="כוח האמונה - אמונה תמימה כדרך מעשית לעבור בה ימים קשים. מהדורה אלקטרונית לקריאה בטלפון, להורדה חינם.">
+<meta property="og:description" content="כוח האמונה - אמונה תמימה כדרך מעשית לעבור בה ימים קשים. מהדורה אלקטרונית לקריאה בטלפון, מחולקת בחינם.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="he_IL">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,159 +42,26 @@
 
 <section>
   <div class="wrap">
+    <h2>בקצרה</h2>
+    <p>זה הספר הראשון שכתבתי, והוא יצא לאור לראשונה בשנת תשס&quot;ט. הוא נכתב מתוך שאלה אחת שחוזרת אצל אנשים שוב ושוב: <strong>מה עושים כשקשה, ואין תשובה טובה למה זה קורה.</strong> הספר אינו מנסה לתרץ את הקושי ואינו מסביר אותו, אלא עוסק במה שכן בידיים של אדם - באמונה התמימה, כזאת שאינה תלויה בהבנה, וכיצד היא הופכת מרעיון להרגל שמחזיק ביום שגרתי ולא רק ברגע של משבר.</p>
+    <p>הספר זכה לארבע מהדורות בדפוס, ובראשו הסכמותיהם של <strong>הרב מאיר מאזוז</strong>, <strong>הרב חיים רבי</strong> ו<strong>הרב יעקב החלבן</strong>. <strong>הפירוט המלא, קטעים מתוך הספר וההסכמות נמצאים בעמוד הספר באתר העמותה</strong>, ומשם גם מקבלים אותו.</p>
 
     <div class="price-row">
       <span class="price">חינם</span>
       <span class="price-note">מהדורה אלקטרונית מלאה, קובץ PDF</span>
     </div>
+    <p class="price-note">הספר מחולק בחינם באתר העמותה, בשתי מהדורות: אחת שעומדה לקריאה בטלפון כדי שהאותיות ייצאו גדולות במסך, ואחת בגודל A4 למחשב ולהדפסה.</p>
 
-    <!-- טופס ההורדה. שני שדות בלבד ובראש העמוד בכוונה: מי שהגיע לכאן מהודעת
-         ההפצה הובטח לו "קישור להורדה", ולכן הוא לא אמור לפגוש טופס פנייה
-         לייעוץ. הקישורים נחשפים מיד על המסך אחרי השליחה, והמייל נשלח במקביל. -->
-    <div class="card" id="book-box">
-      <h2 style="margin-top:0">לקבלת הספר במתנה</h2>
-      <p>נא למלא שם, טלפון נייד וכתובת דוא&quot;ל, והספר יישלח מיד למייל. הקישור להורדה יופיע כאן על המסך באותו רגע.</p>
-
-      <form id="book-form" novalidate>
-        <div class="field">
-          <label for="bname">שם ומשפחה <span class="req">*</span></label>
-          <input id="bname" name="name" type="text" required autocomplete="name">
-        </div>
-
-        <div class="field">
-          <label for="bphone">טלפון נייד <span class="req">*</span></label>
-          <input id="bphone" name="phone" type="tel" required autocomplete="tel" inputmode="tel" dir="ltr">
-        </div>
-
-        <div class="field">
-          <label for="bemail">דוא&quot;ל <span class="req">*</span></label>
-          <input id="bemail" name="email" type="email" required autocomplete="email" dir="ltr">
-        </div>
-
-        <div class="field">
-          <label for="baddress">כתובת מגורים <span class="hint">לא חובה</span></label>
-          <input id="baddress" name="address" type="text" autocomplete="street-address">
-        </div>
-
-        <!-- מלכודת ספאם. אסור להזיז אותה בקיזוז שלילי (left/right: -9999px) -
-             במסמך RTL זה מותח את רוחב המסמך ודוחף את כל התוכן מחוץ למסך. -->
-        <input type="text" name="website" id="bwebsite" tabindex="-1" autocomplete="off"
-               aria-hidden="true"
-               style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;padding:0">
-
-        <button type="submit" class="btn" id="book-submit">שלחו לי את הספר</button>
-        <div class="form-status" id="book-status" role="status"></div>
-      </form>
-
-      <div id="book-links" hidden>
-        <p><strong>הספר מוכן להורדה, והוא גם נשלח למייל.</strong></p>
-        <div class="btn-row">
-          <a class="btn" href="/files/koach-haemuna-phone.pdf" download>להורדה לטלפון</a>
-          <a class="btn btn-ghost" href="/files/koach-haemuna.pdf" download>להורדה למחשב</a>
-        </div>
-        <p class="price-note">מהדורת הטלפון עומדה בעמוד קטן כדי שהאותיות ייצאו גדולות במסך. מהדורת המחשב היא בגודל A4.</p>
-      </div>
+    <div class="btn-row">
+      <a class="btn" href="https://hamikdash.co.il/sfarim/koach-haemuna.html">קבלת הספר האלקטרוני בחינם</a>
+      <a class="btn btn-ghost" href="/books.html">לכל הספרים</a>
     </div>
-
-    <h2>על הספר</h2>
-    <p>זה הספר הראשון שכתבתי, והוא יצא לאור לראשונה בשנת תשס&quot;ט. הוא נכתב מתוך שאלה אחת שחוזרת אצל אנשים שוב ושוב: <strong>מה עושים כשקשה, ואין תשובה טובה למה זה קורה.</strong></p>
-    <p>הספר לא מנסה לתרץ את הקושי ולא להסביר אותו. הוא עוסק במה שכן בידיים של אדם - באמונה התמימה, כזאת שאינה תלויה בהבנה, וכיצד היא הופכת מרעיון להרגל שמחזיק ביום שגרתי ולא רק ברגע של משבר.</p>
-    <p>הספר זכה לארבע מהדורות בדפוס, ובראשו הסכמותיהם של <strong>הרב מאיר מאזוז</strong>, <strong>הרב חיים רבי</strong> ו<strong>הרב יעקב החלבן</strong>.</p>
-
-    <h2>המהדורה האלקטרונית</h2>
-    <p>המהדורה האלקטרונית עומדה מחדש לקריאה במסך וכוללת את סעיף ההסכמות במלואו.</p>
 
     <div class="note">
       <p><strong>קיים גם עותק מודפס.</strong> לבירור זמינות אפשר <a href="/contact.html?book=%D7%9B%D7%95%D7%97%20%D7%94%D7%90%D7%9E%D7%95%D7%A0%D7%94">לפנות דרך עמוד יצירת הקשר</a>.</p>
     </div>
-
-    <div class="btn-row">
-      <a class="btn btn-ghost" href="/books.html">לכל הספרים</a>
-    </div>
   </div>
 </section>
-
-<script>
-(function () {
-  var form = document.getElementById('book-form');
-  var status = document.getElementById('book-status');
-  var btn = document.getElementById('book-submit');
-  var links = document.getElementById('book-links');
-
-  function show(kind, msg) {
-    status.className = 'form-status ' + kind;
-    status.textContent = msg;
-  }
-
-  // נייד ישראלי (05X עם או בלי קידומת 972), או מספר בינלאומי עם + ו-9 ספרות ומעלה.
-  function validPhone(v) {
-    var d = v.replace(/[\s\-().]/g, '');
-    if (/^(\+?972|0)5\d{8}$/.test(d)) return true;
-    return /^\+\d{9,15}$/.test(d);
-  }
-
-  function reveal() {
-    links.hidden = false;
-    form.hidden = true;
-  }
-
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var name = form.elements.name.value.trim();
-    var phone = form.elements.phone.value.trim();
-    var email = form.elements.email.value.trim();
-    if (!name) { show('err', 'נא למלא שם.'); form.elements.name.focus(); return; }
-    if (!validPhone(phone)) {
-      show('err', 'נא למלא מספר טלפון נייד תקין.');
-      form.elements.phone.focus();
-      return;
-    }
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-      show('err', 'כתובת הדוא"ל אינה תקינה.');
-      form.elements.email.focus();
-      return;
-    }
-
-    var data = {
-      kind: 'book',
-      book: 'כוח האמונה',
-      name: name,
-      email: email,
-      phone: phone,
-      address: form.elements.address.value.trim(),
-      website: form.elements.website.value.trim(),
-      page: location.pathname
-    };
-
-    btn.disabled = true;
-    show('ok', 'שולח...');
-
-    fetch(window.LEAD_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    }).then(function (r) {
-      // 422 = הדומיין שאחרי ה-@ אינו קיים. כאן דווקא לא חושפים את
-      // הקישורים: הכתובת שגויה, המייל לעולם לא יגיע, והדבר הנכון הוא
-      // שהטופס יישאר פתוח עד שהיא תתוקן.
-      if (r.status === 422) {
-        show('err', 'נראה שיש שגיאת כתיב בכתובת הדוא"ל - הדומיין שאחרי ה-@ אינו קיים. נא לבדוק ולשלוח שוב.');
-        form.elements.email.focus();
-        return;
-      }
-      if (!r.ok) throw new Error(r.status);
-      show('ok', 'נשלח למייל.');
-      reveal();
-    }).catch(function () {
-      // גם אם המייל נכשל, מי שמילא לא נשאר בלי הספר.
-      show('err', 'המשלוח למייל נתקל בתקלה, אבל אפשר להוריד את הספר ישירות כאן למטה.');
-      reveal();
-    }).then(function () {
-      btn.disabled = false;
-    });
-  });
-})();
-</script>
 </main>
 
 <footer>
